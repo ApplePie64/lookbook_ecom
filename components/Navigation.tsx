@@ -16,20 +16,20 @@ export default function Navigation() {
             <span className="text-[9px] sm:text-[10px] text-white whitespace-nowrap">Boards</span>
           </Link>
 
-          <button className="flex flex-col items-center gap-0.5 transition-transform hover:scale-110 active:scale-95 min-w-0">
+          <Link href="/wardrobe" className="flex flex-col items-center gap-0.5 transition-transform hover:scale-110 active:scale-95 min-w-0">
             <Shirt className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2} />
             <span className="text-[9px] sm:text-[10px] text-white whitespace-nowrap">Wardrobe</span>
-          </button>
+          </Link>
 
           <button className="flex flex-col items-center gap-0.5 transition-transform hover:scale-110 active:scale-95 min-w-0 relative">
             <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2} />
             <span className="text-[9px] sm:text-[10px] text-white whitespace-nowrap">Cart</span>
           </button>
 
-          <button className="flex flex-col items-center gap-0.5 transition-transform hover:scale-110 active:scale-95 min-w-0">
+          <Link href="/account" className="flex flex-col items-center gap-0.5 transition-transform hover:scale-110 active:scale-95 min-w-0">
             <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2} />
             <span className="text-[9px] sm:text-[10px] text-white whitespace-nowrap">Account</span>
-          </button>
+          </Link>
         </div>
       </div>
     </nav>

@@ -5,11 +5,13 @@ import { useState } from "react"
 import Header from "@/components/Header"
 import SearchBar from "@/components/SearchBar"
 import Navigation from "@/components/Navigation"
+import FilterModal from "@/components/FilterModal"
 
 type Category = "Clothes" | "Outfits" | "Both"
 
 export default function BoardsPage() {
   const [activeCategory, setActiveCategory] = useState<Category>("Clothes")
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const categories: Category[] = ["Clothes", "Outfits", "Both"]
 
@@ -80,7 +82,10 @@ export default function BoardsPage() {
             </button>
           ))}
         </div>
-        <button className="p-2">
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+        >
           <SlidersHorizontal className="w-5 h-5 text-white" />
         </button>
       </div>
@@ -101,6 +106,8 @@ export default function BoardsPage() {
           ))}
         </div>
       </main>
+
+      <FilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
 
       <Navigation />
     </div>

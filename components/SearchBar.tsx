@@ -1,4 +1,4 @@
-import { Search, Settings } from "lucide-react"
+import { Search } from "lucide-react"
 
 export default function SearchBar() {
   return (
@@ -10,9 +10,6 @@ export default function SearchBar() {
           placeholder="Search"
           className="w-full bg-transparent pl-10 pr-12 py-3 text-white placeholder-neutral-400 focus:outline-none text-sm"
         />
-        <button className="absolute right-2 p-2 rounded-lg hover:bg-white/10 transition-colors">
-          <Settings className="w-4 h-4 text-neutral-400" />
-        </button>
       </div>
     </div>
   )
