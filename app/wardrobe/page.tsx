@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Palette, Heart, Share2, Info, X, ChevronLeft, ChevronRight } from "lucide-react"
 import Header from "@/components/Header"
 import SearchBar from "@/components/SearchBar"
@@ -49,7 +49,6 @@ export default function WardrobePage() {
   const [savedItems, setSavedItems] = useState<Set<number>>(new Set())
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedItem, setSelectedItem] = useState<number | null>(null)
-  const swipeRef = useRef<HTMLDivElement>(null)
 
   // Keyboard navigation
   useEffect(() => {
@@ -66,7 +65,6 @@ export default function WardrobePage() {
 
   const handleCustomize = (id: number) => {
     console.log(`Customizing outfit ${id}`)
-    // TODO: Navigate to customize page or open modal
     alert(`Customizing outfit: ${wardrobeItems.find(item => item.id === id)?.name}`)
   }
 
@@ -89,12 +87,10 @@ export default function WardrobePage() {
         url: window.location.href,
       }).catch((error) => {
         console.log("Error sharing", error)
-        // Fallback: copy to clipboard
         navigator.clipboard.writeText(window.location.href)
         alert("Link copied to clipboard!")
       })
     } else {
-      // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href)
       alert("Link copied to clipboard!")
     }
@@ -123,12 +119,12 @@ export default function WardrobePage() {
   const currentItem = selectedItem ? wardrobeItems.find(item => item.id === selectedItem) : null
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-y-auto pb-32">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       <Header />
       <SearchBar />
 
       <main className="flex flex-col items-center pt-4 pb-8 relative">
-        <div className="relative w-full max-w-md h-[calc(100vh-250px)] mx-auto">
+        <div className="relative w-full max-w-md h-[calc(100vh-250px)] mx-auto px-4">
           {/* Navigation Arrows */}
           <button
             onClick={handlePrevious}
@@ -157,7 +153,7 @@ export default function WardrobePage() {
             const offset = (index - currentIndex) * 20
             const scale = 1 - Math.abs(index - currentIndex) * 0.05
             const zIndex = wardrobeItems.length - Math.abs(index - currentIndex)
-            const opacity = index <= currentIndex ? 1 : 0.6
+            const opacity = isActive ? 1 : 0.6
             
             return (
               <div
@@ -168,94 +164,57 @@ export default function WardrobePage() {
                   zIndex: zIndex,
                   opacity: opacity,
                   pointerEvents: isActive ? 'auto' : 'none',
+                  visibility: isActive ? 'visible' : 'hidden',
                 }}
               >
                 <div className={`${item.color} rounded-3xl aspect-[3/4] w-full mb-4 shadow-2xl`}></div>
                 
-                <div className="flex gap-2 mb-2">
-                  <button
-                    onClick={() => handleCustomize(item.id)}
-                    className="flex-1 bg-white/10 hover:bg-white/20 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm"
-                  >
-                    <Palette className="w-4 h-4" />
-                    <span className="hidden sm:inline">Customize</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => handleSave(item.id)}
-                    className={`flex-1 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm ${
-                      savedItems.has(item.id)
-                        ? "bg-rose-500 hover:bg-rose-600"
-                        : "bg-white/10 hover:bg-white/20"
-                    }`}
-                  >
-                    <Heart className={`w-4 h-4 ${savedItems.has(item.id) ? "fill-current" : ""}`} />
-                    <span className="hidden sm:inline">Save</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => handleShare(item.id)}
-                    className="flex-1 bg-white/10 hover:bg-white/20 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Share</span>
-                  </button>
-                </div>
+                {/* Only show buttons on active card */}
+                {isActive && (
+                  <>
+                    <div className="flex gap-2 mb-2">
+                      <button
+                        onClick={() => handleCustomize(item.id)}
+                        className="flex-1 bg-white/10 hover:bg-white/20 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm"
+                      >
+                        <Palette className="w-4 h-4" />
+                        <span className="hidden sm:inline">Customize</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => handleSave(item.id)}
+                        className={`flex-1 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm ${
+                          savedItems.has(item.id)
+                            ? "bg-rose-500 hover:bg-rose-600"
+                            : "bg-white/10 hover:bg-white/20"
+                        }`}
+                      >
+                        <Heart className={`w-4 h-4 ${savedItems.has(item.id) ? "fill-current" : ""}`} />
+                        <span className="hidden sm:inline">Save</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => handleShare(item.id)}
+                        className="flex-1 bg-white/10 hover:bg-white/20 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm"
+                      >
+                        <Share2 className="w-4 h-4" />
+                        <span className="hidden sm:inline">Share</span>
+                      </button>
+                    </div>
 
-                <button
-                  onClick={() => handleViewDescription(item.id)}
-                  className="w-full bg-white/10 hover:bg-white/20 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm"
-                >
-                  <Info className="w-4 h-4" />
-                  <span>View Description</span>
-                </button>
+                    <button
+                      onClick={() => handleViewDescription(item.id)}
+                      className="w-full bg-white/10 hover:bg-white/20 rounded-xl py-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors text-sm"
+                    >
+                      <Info className="w-4 h-4" />
+                      <span>View Description</span>
+                    </button>
+                  </>
+                )}
               </div>
             )
           })}
         </div>
-        
-        {/* Swipe area for touch events */}
-        <div
-          ref={swipeRef}
-          onWheel={(e) => {
-            e.preventDefault()
-            if (e.deltaY > 0 && currentIndex < wardrobeItems.length - 1) {
-              setCurrentIndex(currentIndex + 1)
-            } else if (e.deltaY < 0 && currentIndex > 0) {
-              setCurrentIndex(currentIndex - 1)
-            }
-          }}
-          onTouchStart={(e) => {
-            const touch = e.touches[0]
-            const startY = touch.clientY
-            const startIndex = currentIndex
-            
-            const handleTouchMove = (moveEvent: TouchEvent) => {
-              const moveTouch = moveEvent.touches[0]
-              const deltaY = moveTouch.clientY - startY
-              
-              if (Math.abs(deltaY) > 50) {
-                if (deltaY > 0 && startIndex < wardrobeItems.length - 1) {
-                  setCurrentIndex(startIndex + 1)
-                } else if (deltaY < 0 && startIndex > 0) {
-                  setCurrentIndex(startIndex - 1)
-                }
-                document.removeEventListener('touchmove', handleTouchMove)
-                document.removeEventListener('touchend', handleTouchEnd)
-              }
-            }
-            
-            const handleTouchEnd = () => {
-              document.removeEventListener('touchmove', handleTouchMove)
-              document.removeEventListener('touchend', handleTouchEnd)
-            }
-            
-            document.addEventListener('touchmove', handleTouchMove)
-            document.addEventListener('touchend', handleTouchEnd)
-          }}
-          className="absolute inset-0 w-full h-full touch-none"
-          style={{ pointerEvents: 'auto' }}
-        />
       </main>
 
       {/* Description Overlay */}
@@ -297,4 +256,3 @@ export default function WardrobePage() {
     </div>
   )
 }
-
